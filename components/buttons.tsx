@@ -4,6 +4,7 @@ import CopyToClipboard from "react-copy-to-clipboard"
 import styled from "styled-components"
 import { Button, Image, Overlay, OverlayTrigger, Spinner } from "./bootstrap"
 import { Internal } from "./links"
+import { useTranslation } from "next-i18next"
 
 export const TableButton = ({
   onclick,
@@ -28,26 +29,29 @@ export const LoadingButton = ({
 }: ButtonProps & {
   loading?: boolean
   spinnerProps?: Partial<Omit<SpinnerProps, "as" | "role" | "aria-hidden">>
-}) => (
-  <Button {...restProps} disabled={loading || disabled}>
-    {loading ? (
-      <>
-        <Spinner
-          as="span"
-          animation="border"
-          size="sm"
-          role="status"
-          aria-hidden
-          className="me-2"
-          {...spinnerProps}
-        />
-        <span className="visually-hidden">Loading...</span>
-      </>
-    ) : null}
+}) => {
+  const { t } = useTranslation("buttons")
+  return (
+    <Button {...restProps} disabled={loading || disabled}>
+      {loading ? (
+        <>
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden
+            className="me-2"
+            {...spinnerProps}
+          />
+          <span className="visually-hidden">{t("loading")}</span>
+        </>
+      ) : null}
 
-    {children}
-  </Button>
-)
+      {children}
+    </Button>
+  )
+}
 
 export const ImageButton = styled<
   Pick<ImageProps, "alt" | "src"> & { tooltip?: string; href?: string }
@@ -132,6 +136,7 @@ export const CopyButton = ({
   const [show, setShow] = useState(false)
   const target = useRef(null)
   const closeTimeout = useRef<any>()
+  const { t } = useTranslation("buttons")
   return (
     <>
       <CopyToClipboard
@@ -153,7 +158,7 @@ export const CopyButton = ({
         </Button>
       </CopyToClipboard>
       <Overlay target={target} show={show} placement="top">
-        {props => <Tooltip {...props}>Copied to Clipboard!</Tooltip>}
+        {props => <Tooltip {...props}>{t("copy")}</Tooltip>}
       </Overlay>
     </>
   )
